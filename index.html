@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUCIUS ULTRA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ffff;
+            --primary-dark: #00cccc;
+            --secondary: #2575fc;
+            --secondary-dark: #1e5fcf;
+            --accent: #ff6b6b;
+            --accent-light: #ff8e8e;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --light: #f8f9fa;
+            --red: #ff4757;
+            --green: #00ff88;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.4);
+            --glow: 0 0 30px rgba(0, 255, 255, 0.3);
+            --glow-strong: 0 0 50px rgba(0, 255, 255, 0.5);
+            --border-radius: 20px;
+            --border-radius-small: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(37, 117, 252, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 900;
+            font-family: 'Orbitron', monospace;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: var(--glow);
+            animation: gradientShift 4s ease-in-out infinite, logoFloat 6s ease-in-out infinite;
+            position: relative;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 200% 200%;
+            border-radius: 20px;
+            filter: blur(20px);
+            opacity: 0.3;
+            z-index: -1;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(0, 255, 255, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-title i {
+            font-size: 1.6rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+        }
+
+        .result-display {
+            text-align: center;
+            padding: 40px 30px;
+            margin-bottom: 25px;
+            border-radius: var(--border-radius);
+            background: 
+                radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%),
+                linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .result-display::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                conic-gradient(from 0deg, transparent, rgba(0, 255, 255, 0.1), transparent, rgba(37, 117, 252, 0.1), transparent);
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+        }
+
+        .result-display > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .period-info {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(37, 117, 252, 0.5);
+        }
+
+        .prediction-result {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 20px 0;
+            color: white;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+
+        .prediction-short {
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 25px 0;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: var(--glow-strong);
+            animation: gradientShift 3s ease-in-out infinite, scaleUp 4s ease-in-out infinite;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .probability {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        .history-content {
+            min-height: 350px;
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        .history-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .history-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .history-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: var(--border-radius-small);
+            padding: 20px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .history-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .history-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(8px);
+            border-color: rgba(0, 255, 255, 0.2);
+        }
+
+        .history-item div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .history-value {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .color-dot {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-right: 8px;
+            position: relative;
+        }
+
+        .color-dot::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            background: inherit;
+            filter: blur(4px);
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        .color-red {
+            background-color: var(--red);
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.6);
+        }
+
+        .color-green {
+            background-color: var(--green);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+        }
+
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .control-panel {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        select, button {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: var(--border-radius-small);
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(0,255,255,0.8)'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            background-size: 18px;
+        }
+
+        select:focus, button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        select:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(0, 255, 255, 0.3);
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite, buttonGlow 3s ease-in-out infinite alternate;
+        }
+
+        .floating-tabs {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            background: rgba(10, 10, 26, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            padding: 15px 25px;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            animation: floatGlow 6s infinite alternate ease-in-out;
+        }
+
+        .floating-tab {
+            padding: 15px;
+            margin: 0 3px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 50px;
+            min-height: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .floating-tab i {
+            margin-right: 0;
+            font-size: 1.3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .floating-tab.active::before {
+            opacity: 1;
+        }
+
+        .floating-tab.active {
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.4);
+        }
+
+        .floating-tab:not(.active):hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            display: none;
+            z-index: 1001;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        /* Enhanced Animations */
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(1deg); }
+            66% { transform: translateY(5px) rotate(-1deg); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            100% { text-shadow: 0 0 30px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.6); }
+        }
+
+        @keyframes scaleUp {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0); }
+        }
+
+        @keyframes buttonGlow {
+            0% { box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3); }
+            100% { box-shadow: 0 15px 40px rgba(0, 255, 255, 0.5); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes floatGlow {
+            0% { 
+                box-shadow: 
+                    0 10px 40px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.1),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                    0 0 30px rgba(0, 255, 255, 0.2);
+            }
+            100% { 
+                box-shadow: 
+                    0 15px 50px rgba(0, 0, 0, 0.6),
+                    0 0 0 1px rgba(0, 255, 255, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                    0 0 40px rgba(0, 255, 255, 0.4);
+            }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* Responsive Design Improvements */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .history-item {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+            
+            .history-item div {
+                grid-column: span 1;
+            }
+            
+            .card-title {
+                font-size: 1.1rem;
+            }
+            
+            .prediction-result {
+                font-size: 1.6rem;
+            }
+            
+            .prediction-short {
+                font-size: 3rem;
+            }
+
+            .floating-tab {
+                padding: 12px;
+                min-width: 45px;
+                min-height: 45px;
+            }
+
+            .floating-tab i {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .floating-tabs {
+                bottom: 15px;
+                padding: 10px 15px;
+            }
+            
+            .floating-tab {
+                padding: 10px;
+                min-width: 40px;
+                min-height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+           <h1 class="logo floating"><i class="fa-brands fa-atlassian"></i> LUCIUS ULTRA</h1>
+        </header>
+
+        <!-- Tab Contents -->
+        <div id="home-tab" class="tab-content active">
+            <div class="card result-display">
+                <div class="period-info">
+                    <i class=""></i> <span id="period"></span>
+                </div>
+                <div class="timer" id="timer">
+                    <i class=""></i>
+                    <span></span>
+                </div>
+                <div class="prediction-result" id="currentResult">ANALYZING...</div>
+                <div class="prediction-short" id="predictionShort">-</div>
+                <div class="probability" id="probability"><i class="fas fa-percentage"></i> </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-history"></i> RECENT RESULTS</h2>
+                <div class="history-content" id="historyContent">
+                    LOADING DATA...
+                </div>
+            </div>
+        </div>
+
+        <div id="settings-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-cogs"></i> CONTROL PANEL</h2>
+                <div class="control-panel">
+                    <div>
+                        <label for="resultType">SELECT MODE :</label>
+                        <select id="resultType">
+                            <option value="bigsmall">BIG/SMALL</option>
+                            <option value="redgreen">RED/GREEN</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="serverSelect">PREDICTION SERVER :</label>
+                        <select id="serverSelect" onchange="updateServerSelection()">
+                            <option value="auto">AUTO SELECT (RECOMMENDED)</option>
+                            <option value="cosmic">COSMIC BLITZ</option>
+                            <option value="neural">SPIRAL FUSION</option>
+                            <option value="fractal">HYBRID NEXUS</option>
+                            <option value="chaos">PHEONIX FRICTION</option>
+                            <option value="temporal">AERO XTREME</option>
+                            <option value="holo">OCTA AI CROSS</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button onclick="forceRefresh()" class="pulse">
+                    <i class="fas fa-sync-alt"></i> FORCE REFRESH
+                </button>
+            </div>
+          
+            <div class="card" style="margin-top: 20px;">
+                <h2 class="card-title"><i class="fas fa-user-shield"></i> CONTACT</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <button onclick="window.open('https://t.me/+YfhmnC21ZoVkZGRl')" style="background: linear-gradient(to right, #0088cc, #00aced);">
+                        <i class="fab fa-telegram"></i> CHANNEL
+                    </button>
+                    <button onclick="window.open('https://t.me/ZENITHMODS77')" style="background: linear-gradient(to right, #25D366, #128C7E);">
+                        <i class="fas fa-headset"></i> OWNER
+                    </button>
+                </div>
+            </div>
+        </div>
+      
+        <div id="theme-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-paint-brush"></i> SELECT THEME</h2>
+                <div class="control-panel">
+                    <button onclick="applyTheme('ocean')"><i class="fas fa-water"></i> OCEAN</button>
+                    <button onclick="applyTheme('forest')"><i class="fas fa-tree"></i> FOREST</button>
+                    <button onclick="applyTheme('neon')"><i class="fas fa-lightbulb"></i> NEON</button>
+                    <button onclick="applyTheme('matrix')"><i class="fas fa-code"></i> MATRIX</button>
+                    <button onclick="applyTheme('sky')"><i class="fas fa-cloud"></i> SKY</button>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <label>
+                            PRIMARY COLOUR :
+                            <input type="color" id="customPrimary" value="#00ffff">
+                        </label>
+                        <label>
+                            SECONDARY COLOUR :
+                            <input type="color" id="customSecondary" value="#2575fc">
+                        </label>
+                        <label>
+                            CONTAINER COLOUR :
+                            <input type="color" id="customDark" value="#0a0a1a">
+                        </label>
+                        <label>
+                            BACKGROUND COLOUR :
+                            <input type="color" id="customDarker" value="#050510">
+                        </label>
+                        <button onclick="applyCustomTheme()">APPLY THEME</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Tabs Navigation -->
+    <div class="floating-tabs">
+        <div class="floating-tab active" onclick="switchTab('home')">
+            <i class="fas fa-home"></i>
+        </div>
+        <div class="floating-tab" onclick="switchTab('settings')">
+            <i class="fas fa-cog"></i>
+        </div>
+        <div class="floating-tab" onclick="switchTab('theme')">
+            <i class="fas fa-palette"></i>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // Global Variables
+        let lastPeriodNumber = null;
+        let selectedServer = 'auto'; // Default to auto-select
+        let lastTimerUpdate = 0;
+        let refreshInterval = 1000; // Refresh every second
+        let dataRefreshInterval = 60000; // Refresh data every minute
+        let historyData = [];
+        let isFetching = false;
+
+        // Tab Switching Function
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            document.querySelectorAll('.floating-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.floating-tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            
+            if (tabName === 'home') {
+                fetchData();
+            }
+        }
+
+        // Timer and Period Logic
+        function updatePeriodAndTimer() {
+            const now = new Date();
+            const currentTime = now.getTime();
+
+            if (currentTime - lastTimerUpdate < 500) return;
+            lastTimerUpdate = currentTime;
+
+            now.setUTCSeconds(now.getUTCSeconds());
+            const year = now.getUTCFullYear();
+            const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(now.getUTCDate()).padStart(2, '0');
+            const hours = now.getUTCHours();
+            const minutes = now.getUTCMinutes();
+            const totalMinutes = hours * 60 + minutes;
+
+            const periodNumber = `${year}${month}${day}1000${10001 + totalMinutes}`;
+            const remainingSeconds = 60 - now.getUTCSeconds();
+
+            if (lastPeriodNumber !== periodNumber) {
+                console.log('New period generated:', periodNumber);
+                lastPeriodNumber = periodNumber;
+                document.getElementById('period').textContent = ` ${periodNumber || 'N/A'}`;
+                generateResult(periodNumber);
+                
+                // Check if we should refresh history data (every minute)
+                if (minutes % 1 === 0 && now.getUTCSeconds() < 5) {
+                    fetchData();
+                }
+            }
+
+            document.getElementById('timer').textContent = ` ${String(remainingSeconds).padStart(2, '0')}s`;
+        }
+
+        // Function to fetch previous results (history)
+        async function fetchPreviousResults() {
+            if (isFetching) return historyData;
+            isFetching = true;
+            
+            try {
+                const timestamp = Date.now();
+                const response = await fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${timestamp}&pageSize=10`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data?.data?.list || data.data.list.length === 0) {
+                    console.warn('API returned no history data. Using empty array.');
+                    return historyData.length > 0 ? historyData : [];
+                }
+                
+                historyData = data.data.list.slice(0, 10); // Store last 10 results
+                return historyData;
+            } catch (e) {
+                console.error('Error fetching previous results:', e);
+                return historyData.length > 0 ? historyData : []; // Return cached data on error
+            } finally {
+                isFetching = false;
+            }
+        }
+
+        // Generate prediction result
+        function generateResult(periodNumber) {
+            const resultType = document.getElementById('resultType').value;
+            const predictions = ['BIG', 'SMALL'];
+            const colors = ['RED', 'GREEN'];
+            
+            let prediction, shortPrediction, probability;
+            
+            if (resultType === 'bigsmall') {
+                prediction = predictions[Math.floor(Math.random() * predictions.length)];
+                shortPrediction = prediction === 'BIG' ? 'B' : 'S';
+                probability = Math.floor(Math.random() * 20) + 75; // 75-95%
+            } else {
+                prediction = colors[Math.floor(Math.random() * colors.length)];
+                shortPrediction = prediction === 'RED' ? 'R' : 'G';
+                probability = Math.floor(Math.random() * 20) + 70; // 70-90%
+            }
+            
+            // Update UI
+            document.getElementById('currentResult').textContent = ` ${prediction}`;
+            document.getElementById('predictionShort').textContent = shortPrediction;
+            document.getElementById('probability').innerHTML = `<i class="fas fa-percentage"></i>  ${probability}%`;
+        }
+
+        // Fetch data for history tab
+        async function fetchData() {
+            try {
+                const historyContent = document.getElementById('historyContent');
+                if (!historyContent) return;
+                
+                historyContent.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> LOADING DATA...</div>';
+                
+                const data = await fetchPreviousResults();
+                displayHistory(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                const historyContent = document.getElementById('historyContent');
+                if (historyContent) {
+                    historyContent.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--red);"><i class="fas fa-exclamation-triangle"></i> ERROR LOADING DATA</div>';
+                }
+            }
+        }
+
+        // Display history data - FIXED COLOR LOGIC
+        function displayHistory(data) {
+            const historyContent = document.getElementById('historyContent');
+            if (!historyContent) return;
+            
+            if (!data || data.length === 0) {
+                historyContent.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-info-circle"></i> NO DATA AVAILABLE</div>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach(item => {
+                const sum = parseInt(item.premium);
+                const bigSmall = sum >= 5 ? 'BIG' : 'SMALL';
+                
+                // FIXED: Correct color logic - 0,2,4,6,8 RED and 1,3,5,7,9 GREEN
+                const isEven = sum % 2 === 0;
+                const redGreen = isEven ? 'RED' : 'GREEN';
+                const colorClass = isEven ? 'color-red' : 'color-green';
+                
+                html += `
+                    <div class="history-item">
+                        <div>
+                            <div class="history-label">PERIOD</div>
+                            <div class="history-value">${item.issueNumber}</div>
+                        </div>
+                        <div>
+                            <div class="history-label">RESULT</div>
+                            <div class="history-value">${sum}</div>
+                        </div>
+                        <div>
+                            <div class="history-label">SIZE</div>
+                            <div class="history-value">${bigSmall}</div>
+                        </div>
+                        <div>
+                            <div class="history-label">COLOR</div>
+                            <div class="history-value">
+                                <span class="color-dot ${colorClass}"></span>${redGreen}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            historyContent.innerHTML = html;
+        }
+
+        // Update server selection
+        function updateServerSelection() {
+            const serverSelect = document.getElementById('serverSelect');
+            selectedServer = serverSelect.value;
+            console.log('Server selection updated:', selectedServer);
+            showToast(`🌐 SERVER: ${selectedServer.toUpperCase()}`);
+        }
+
+        // Force refresh function
+        function forceRefresh() {
+            if (lastPeriodNumber) {
+                generateResult(lastPeriodNumber);
+            }
+            fetchData();
+            showToast('🔄 SYSTEM REFRESHED');
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            
+            toast.textContent = message;
+            toast.style.display = 'block';
+            toast.style.animation = 'none';
+            void toast.offsetWidth; // Trigger reflow
+            toast.style.animation = 'fadeInOut 3s ease-in-out';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Theme functions
+        function applyTheme(themeName) {
+            const themes = {
+                ocean: { primary: '#00bcd4', secondary: '#0097a7', dark: '#1a237e', darker: '#0d47a1' },
+                forest: { primary: '#4caf50', secondary: '#388e3c', dark: '#1b5e20', darker: '#2e7d32' },
+                neon: { primary: '#e91e63', secondary: '#ad1457', dark: '#880e4f', darker: '#4a148c' },
+                matrix: { primary: '#00ff00', secondary: '#00cc00', dark: '#001100', darker: '#000800' },
+                sky: { primary: '#03a9f4', secondary: '#0288d1', dark: '#01579b', darker: '#0277bd' }
+            };
+            
+            if (themes[themeName]) {
+                const theme = themes[themeName];
+                document.documentElement.style.setProperty('--primary', theme.primary);
+                document.documentElement.style.setProperty('--secondary', theme.secondary);
+                document.documentElement.style.setProperty('--dark', theme.dark);
+                document.documentElement.style.setProperty('--darker', theme.darker);
+                showToast(`🎨 ${themeName.toUpperCase()} THEME APPLIED`);
+            }
+        }
+
+        function applyCustomTheme() {
+            const primary = document.getElementById('customPrimary').value;
+            const secondary = document.getElementById('customSecondary').value;
+            const dark = document.getElementById('customDark').value;
+            const darker = document.getElementById('customDarker').value;
+            
+            document.documentElement.style.setProperty('--primary', primary);
+            document.documentElement.style.setProperty('--secondary', secondary);
+            document.documentElement.style.setProperty('--dark', dark);
+            document.documentElement.style.setProperty('--darker', darker);
+            
+            showToast('🎨 CUSTOM THEME APPLIED');
+        }
+
+        // Initialize the application
+        function init() {
+            console.log('Initializing LUCIUS ULTRA...');
+            
+            // Start timer updates
+            setInterval(updatePeriodAndTimer, refreshInterval);
+            
+            // Initial period and timer update
+            updatePeriodAndTimer();
+            
+            // Initial data fetch
+            fetchData();
+            
+            // Set up periodic data refresh
+            setInterval(fetchData, dataRefreshInterval);
+            
+            console.log('LUCIUS ULTRA initialized successfully');
+        }
+
+        // Start the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
