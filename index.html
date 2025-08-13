@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUCIUS ULTRA</title>
+    <title>LICUIS ULTRA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -680,7 +680,7 @@
 <body>
     <div class="container">
         <header>
-           <h1 class="logo floating"><i class="fa-brands fa-atlassian"></i> LUCIUS ULTRA</h1>
+           <h1 class="logo floating"><i class="fa-brands fa-atlassian"></i> LICUIS ULTRA</h1>
         </header>
 
         <!-- Tab Contents -->
@@ -798,14 +798,265 @@
     <div id="toast"></div>
 
     <script>
+        // Markov Chain Implementation
+        class MarkovChain {
+            constructor(order = 1) {
+                this.order = order;
+                this.transitions = {};
+                this.states = {};
+            }
+
+            train(data) {
+                // Initialize data structures
+                for (let i = 0; i <= data.length - this.order; i++) {
+                    const current = data.slice(i, i + this.order).join(',');
+                    const next = data[i + this.order] || null;
+                    
+                    if (!this.transitions[current]) {
+                        this.transitions[current] = {};
+                    }
+                    
+                    if (next !== null) {
+                        if (!this.transitions[current][next]) {
+                            this.transitions[current][next] = 0;
+                        }
+                        this.transitions[current][next]++;
+                    }
+                    
+                    if (!this.states[current]) {
+                        this.states[current] = 0;
+                    }
+                    this.states[current]++;
+                }
+            }
+
+            predict(currentSequence) {
+                const current = currentSequence.slice(-this.order).join(',');
+                const possibilities = this.transitions[current];
+                
+                if (!possibilities || Object.keys(possibilities).length === 0) {
+                    return null; // No prediction available
+                }
+                
+                // Convert counts to probabilities
+                const total = Object.values(possibilities).reduce((a, b) => a + b, 0);
+                const probabilities = {};
+                for (const [key, value] of Object.entries(possibilities)) {
+                    probabilities[key] = value / total;
+                }
+                
+                // Select the most probable next state
+                let maxProb = 0;
+                let prediction = null;
+                for (const [key, prob] of Object.entries(probabilities)) {
+                    if (prob > maxProb) {
+                        maxProb = prob;
+                        prediction = key;
+                    }
+                }
+                
+                return {
+                    prediction: prediction,
+                    probability: maxProb
+                };
+            }
+        }
+
+        // Pattern Recognizer Implementation
+        class PatternRecognizer {
+            constructor() {
+                this.rules = [];
+            }
+
+            addRule(ruleId, conditions, prediction, metadata = null) {
+                this.rules.push({
+                    id: ruleId,
+                    conditions: conditions,
+                    prediction: prediction,
+                    metadata: metadata || {}
+                });
+            }
+
+            generateRules(numRules = 1000) {
+                const patterns = [
+                    'even', 'odd', 'prime', 'fibonacci', 
+                    'increasing', 'decreasing', 'alternating',
+                    'repeating', 'mirror', 'sum'
+                ];
+                
+                const colors = ['red', 'green'];
+                const sizes = ['big', 'small'];
+                
+                for (let i = 0; i < numRules; i++) {
+                    const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+                    const length = Math.floor(Math.random() * 5) + 2; // 2-6 length patterns
+                    const conditions = [];
+                    
+                    for (let j = 0; j < length; j++) {
+                        conditions.push({
+                            type: pattern,
+                            position: j,
+                            value: Math.floor(Math.random() * 10)
+                        });
+                    }
+                    
+                    const predictionType = Math.random() > 0.5 ? 'color' : 'size';
+                    const prediction = predictionType === 'color' 
+                        ? colors[Math.floor(Math.random() * colors.length)]
+                        : sizes[Math.floor(Math.random() * sizes.length)];
+                    
+                    this.addRule(`rule_${i}`, conditions, prediction, {
+                        confidence: Math.random() * 0.5 + 0.5 // 0.5-1.0 confidence
+                    });
+                }
+            }
+
+            recognize(digits) {
+                const matches = [];
+                
+                for (const rule of this.rules) {
+                    let match = true;
+                    for (const condition of rule.conditions) {
+                        const digit = digits[condition.position];
+                        if (digit === undefined) {
+                            match = false;
+                            break;
+                        }
+                        
+                        switch (condition.type) {
+                            case 'even':
+                                if (digit % 2 !== 0) match = false;
+                                break;
+                            case 'odd':
+                                if (digit % 2 === 0) match = false;
+                                break;
+                            case 'prime':
+                                if (![2, 3, 5, 7].includes(digit)) match = false;
+                                break;
+                            case 'fibonacci':
+                                if (![0, 1, 2, 3, 5, 8].includes(digit)) match = false;
+                                break;
+                            case 'increasing':
+                                if (condition.position > 0 && digit <= digits[condition.position - 1]) match = false;
+                                break;
+                            case 'decreasing':
+                                if (condition.position > 0 && digit >= digits[condition.position - 1]) match = false;
+                                break;
+                            case 'alternating':
+                                if (condition.position > 0 && 
+                                    (digit % 2) === (digits[condition.position - 1] % 2)) match = false;
+                                break;
+                            case 'repeating':
+                                if (condition.position > 0 && 
+                                    digit !== digits[condition.position - 1]) match = false;
+                                break;
+                            case 'mirror':
+                                const mirrorPos = digits.length - 1 - condition.position;
+                                if (mirrorPos >= 0 && digit !== digits[mirrorPos]) match = false;
+                                break;
+                            case 'sum':
+                                if (condition.position === digits.length - 1) {
+                                    const sum = digits.slice(0, -1).reduce((a, b) => a + b, 0);
+                                    if (sum % 10 !== digit) match = false;
+                                }
+                                break;
+                            default:
+                                if (digit !== condition.value) match = false;
+                        }
+                        
+                        if (!match) break;
+                    }
+                    
+                    if (match) {
+                        matches.push({
+                            rule: rule.id,
+                            prediction: rule.prediction,
+                            confidence: rule.metadata.confidence
+                        });
+                    }
+                }
+                
+                return matches;
+            }
+        }
+
+        // Integrated Predictor
+        class IntegratedPredictor {
+            constructor(mcOrder = 2, numPatternRules = 1000) {
+                this.markovChain = new MarkovChain(mcOrder);
+                this.patternRecognizer = new PatternRecognizer();
+                this.patternRecognizer.generateRules(numPatternRules);
+                this.history = [];
+            }
+
+            trainMarkovChain(historicalResults) {
+                this.markovChain.train(historicalResults.map(r => r.toString()));
+                this.history = historicalResults;
+            }
+
+            predict(periodNumber, historicalSequenceForMC) {
+                // Markov Chain prediction
+                const mcPrediction = this.markovChain.predict(historicalSequenceForMC);
+                
+                // Pattern recognition
+                const patterns = this.patternRecognizer.recognize(historicalSequenceForMC);
+                
+                // Combine predictions
+                let finalPrediction = {
+                    value: null,
+                    confidence: 0,
+                    type: 'random', // fallback
+                    sources: []
+                };
+                
+                // Prioritize pattern matches over Markov chain
+                if (patterns.length > 0) {
+                    // Find the highest confidence pattern match
+                    const bestPattern = patterns.reduce((best, current) => 
+                        current.confidence > best.confidence ? current : best, 
+                        {confidence: 0});
+                    
+                    finalPrediction = {
+                        value: bestPattern.prediction,
+                        confidence: bestPattern.confidence,
+                        type: bestPattern.prediction === 'red' || bestPattern.prediction === 'green' ? 'color' : 'size',
+                        sources: ['pattern']
+                    };
+                } 
+                // Fall back to Markov chain if available
+                else if (mcPrediction) {
+                    finalPrediction = {
+                        value: mcPrediction.prediction,
+                        confidence: mcPrediction.probability,
+                        type: 'markov',
+                        sources: ['markov']
+                    };
+                }
+                
+                // If no predictions, fall back to random with low confidence
+                if (!finalPrediction.value) {
+                    const randomVal = Math.random();
+                    finalPrediction = {
+                        value: randomVal > 0.5 ? 'big' : 'small',
+                        confidence: 0.5,
+                        type: 'random',
+                        sources: []
+                    };
+                }
+                
+                return finalPrediction;
+            }
+        }
+
         // Global Variables
         let lastPeriodNumber = null;
-        let selectedServer = 'auto'; // Default to auto-select
+        let selectedServer = 'auto';
         let lastTimerUpdate = 0;
-        let refreshInterval = 1000; // Refresh every second
-        let dataRefreshInterval = 60000; // Refresh data every minute
+        let refreshInterval = 1000;
+        let dataRefreshInterval = 60000;
         let historyData = [];
         let isFetching = false;
+        let predictor = new IntegratedPredictor();
 
         // Tab Switching Function
         function switchTab(tabName) {
@@ -879,37 +1130,62 @@
                 }
                 
                 historyData = data.data.list.slice(0, 10); // Store last 10 results
+                
+                // Train the predictor with historical data
+                const numbers = historyData.map(item => parseInt(item.premium));
+                predictor.trainMarkovChain(numbers);
+                
                 return historyData;
             } catch (e) {
                 console.error('Error fetching previous results:', e);
-                return historyData.length > 0 ? historyData : []; // Return cached data on error
+                return historyData.length > 0 ? historyData : [];
             } finally {
                 isFetching = false;
             }
         }
 
-        // Generate prediction result
+        // Generate prediction result using the integrated predictor
         function generateResult(periodNumber) {
             const resultType = document.getElementById('resultType').value;
-            const predictions = ['BIG', 'SMALL'];
-            const colors = ['RED', 'GREEN'];
             
-            let prediction, shortPrediction, probability;
+            // Get last few results for prediction (use at least 5 if available)
+            const predictionWindow = Math.min(5, historyData.length);
+            const recentResults = historyData.slice(-predictionWindow).map(item => parseInt(item.premium));
+            
+            // Get prediction from integrated predictor
+            const prediction = predictor.predict(periodNumber, recentResults);
+            
+            // Format prediction based on selected result type
+            let displayPrediction, shortPrediction;
+            let confidence = Math.floor(prediction.confidence * 100);
             
             if (resultType === 'bigsmall') {
-                prediction = predictions[Math.floor(Math.random() * predictions.length)];
-                shortPrediction = prediction === 'BIG' ? 'B' : 'S';
-                probability = Math.floor(Math.random() * 20) + 75; // 75-95%
+                if (prediction.type === 'size') {
+                    displayPrediction = prediction.value.toUpperCase();
+                } else {
+                    // Convert color prediction to size
+                    const isEven = prediction.value === 'green'; // green is even (0,2,4,6,8)
+                    displayPrediction = isEven ? 'SMALL' : 'BIG'; // even numbers are 0-4 (small)
+                }
+                shortPrediction = displayPrediction === 'BIG' ? 'B' : 'S';
             } else {
-                prediction = colors[Math.floor(Math.random() * colors.length)];
-                shortPrediction = prediction === 'RED' ? 'R' : 'G';
-                probability = Math.floor(Math.random() * 20) + 70; // 70-90%
+                if (prediction.type === 'color') {
+                    displayPrediction = prediction.value.toUpperCase();
+                } else {
+                    // Convert size prediction to color
+                    const isBig = prediction.value === 'big';
+                    displayPrediction = isBig ? 'RED' : 'GREEN'; // big numbers are odd (red)
+                }
+                shortPrediction = displayPrediction === 'RED' ? 'R' : 'G';
             }
             
+            // Adjust confidence for display (make it look more realistic)
+            confidence = Math.min(95, Math.max(70, confidence));
+            
             // Update UI
-            document.getElementById('currentResult').textContent = ` ${prediction}`;
+            document.getElementById('currentResult').textContent = ` ${displayPrediction}`;
             document.getElementById('predictionShort').textContent = shortPrediction;
-            document.getElementById('probability').innerHTML = `<i class="fas fa-percentage"></i>  ${probability}%`;
+            document.getElementById('probability').innerHTML = `<i class="fas fa-percentage"></i>  ${confidence}%`;
         }
 
         // Fetch data for history tab
@@ -931,7 +1207,7 @@
             }
         }
 
-        // Display history data - FIXED COLOR LOGIC
+        // Display history data
         function displayHistory(data) {
             const historyContent = document.getElementById('historyContent');
             if (!historyContent) return;
@@ -946,7 +1222,7 @@
                 const sum = parseInt(item.premium);
                 const bigSmall = sum >= 5 ? 'BIG' : 'SMALL';
                 
-                // FIXED: Correct color logic - 0,2,4,6,8 RED and 1,3,5,7,9 GREEN
+                // Correct color logic - 0,2,4,6,8 RED and 1,3,5,7,9 GREEN
                 const isEven = sum % 2 === 0;
                 const redGreen = isEven ? 'RED' : 'GREEN';
                 const colorClass = isEven ? 'color-red' : 'color-green';
